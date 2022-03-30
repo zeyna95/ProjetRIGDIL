@@ -31,7 +31,6 @@ for nomArticle in fichiers :
     doc = nlp(mot_cle)
     contenuArticles[nomArticle] = mot_cle
     articles[nomArticle]=doc
-print(articles["article70674.json"])
 
 def similariteArticle(articles):
     # matrice de similarité 
@@ -138,7 +137,7 @@ def adjacentFils(noeud,adjacentMax,similariteArticle):
 
 # la classe pour contruire un noeud
 class Node:
-    def __init__(self,val):
+     def __init__(self,val):
         self.contenu =[]
         self.fils = None
         self.val = val 
@@ -263,35 +262,41 @@ class Arbre:
                 simi = n
         return simi
     
-    def _determiner_mot_cle(self,article):
-        with open("C:/Users/E450/Desktop/M2GDIL/ProjetRI/articlesTest/"+article,encoding="utf-8") as json_data:
-            data_dict = json.load(json_data)
+    def _determiner_mot_cle(self,search):
         mot_cle=""
-        doc = nlp(data_dict['contenuArticle'])
+        doc = nlp(search)
         tokens = [x.text for x in doc]
         for token in tokens:
             if token not in MOT_VIDES:
                 mot_cle = mot_cle +" "+token
         return  nlp(mot_cle), mot_cle
 
-    def _recur(self,noeud,motCle,classe_art):
-        sim_max = 0;
+    def _recur(self,noeud,motCle,classe_art,liste_art):
+        sim_max = 0
         num_fils = -1
         if(noeud.fils==None):
-            return noeud.contenu,classe_art,noeud.val
+            #return noeud.contenu,classe_art,noeud.val
+            liste_art.append(noeud.contenu)
+            return
         classe_art = noeud.val
         for num, key in enumerate(noeud.fils):
             a = self._simi_article(motCle,key)
             if(a>=sim_max):
                 sim_max = a
                 num_fils = num
-        return self._recur(noeud.fils[num_fils],motCle,classe_art)
+        #return
+        liste_art.append(noeud.contenu)
+        
+        self._recur(noeud.fils[num_fils],motCle,classe_art,liste_art)
     
     def classe_article(self,root,article):
-        
+        liste_art = []
         doc,mot_cle = self._determiner_mot_cle(article)
-        cont , classe, art = self._recur(self.root,doc,root.val)
-        return mot_cle, cont , classe, art
+        #cont , classe, art = 
+        self._recur(self.root,doc,root.val,liste_art)
+        
+        return liste_art
+        #return mot_cle, cont , classe, art
          
                 
     def tracerGraphe(self):
@@ -301,14 +306,3 @@ class Arbre:
                 if(self.simi[c][i]==1):
                     g.edge(c, i)
         return g
-
-ar = Arbre()
-classes = trouverClasses(adjacent)
-ar.add(classes,adjacent,similarite)
-ar.tracerGraphe()
-
-mot,c, a, p = ar.classe_article(ar.root,"article106279.json")
-print(contenuArticles[c[0]])
-print(a)
-print(p)
-print(mot)

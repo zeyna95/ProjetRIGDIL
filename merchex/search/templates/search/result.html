@@ -1,10 +1,8 @@
-
-{% extends "search/hello.html" %}
+{% extends "search/accueil.html" %}
 
 {% block content %}      
 
 {% load crispy_forms_tags %}
-
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Navbar</a>
@@ -44,6 +42,9 @@
               <div id="emailHelp" class="form-text">Taper vos recherches ici mais insistez sur les mots cles.</div>
             </div>
             <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+        </form>
+        {% if searchs != null %}
+           <p> {{searchs}} </p>
+        {% endif %}
 </div>
   {% endblock %}

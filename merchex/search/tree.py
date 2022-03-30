@@ -14,7 +14,7 @@ MOT_VIDES = set(set(STOP_WORDS).union(NEW_STOP_WORDS)).union(ponctuation)
 
 # recuperer le nom de tous les articles pour le premier dossier articlesprojet
 def charger():
-    fichiers = listdir('C:/Users/E450/Desktop/M2GDIL/ProjetRI/articles')
+    fichiers = listdir('C:/Users/E450/Desktop/M2GDIL/ProjetRI/articles') 
     # un dico d'article contenant tous les articles
     articles = {}
     for nomArticle in fichiers :
@@ -296,13 +296,3 @@ class Arbre:
                     g.edge(c, i)
         return g
         
-ar = Arbre()
-classes = trouverClasses(adjacent)
-ar.add(classes,adjacent,similarite)
-ar.tracerGraphe()
-
-mot ,c, a, p = ar.classe_article(ar.root,"article100.json")
-print(articles[c[0]])
-print(a)
-print(p)
-print(mot)
