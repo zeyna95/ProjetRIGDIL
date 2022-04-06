@@ -7,7 +7,7 @@
 
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="#">KaRatSuba</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="False" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -19,7 +19,7 @@
           <a class="nav-link" href="/logout">Logout</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Welcome, {{user.username}}</a>
+          <a class="nav-link" href="#">Welcome, {{user.username }}</a>
         </li>
   
         {% else %}
@@ -35,13 +35,20 @@
 
   <!--Search--> 
 <div class="container py-5">
-	<h1>SEARCH</h1>
+	<h1>KaRatSuba</h1>
 		<form method="post">
             {% csrf_token %}
             <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label">Your Search</label>
               <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="search">
-              <div id="emailHelp" class="form-text">Taper vos recherches ici mais insistez sur les mots cles.</div>
+              <br/>
+                  <select name="profil" id="profil">
+                      <option value="">--Please choose an option--</option>
+                      <option value="oui">Avec Profil</option>
+                      <option value="non">Sans Profil</option>
+                  </select>
+                  <br/>
+              <div id="emailHelp" class="form-text">Taper vos recherches ici mais insistez si c'est avec profil ou sans.</div>
             </div>
             <button type="submit" class="btn btn-primary">Search</button>
     </form>

@@ -3,7 +3,7 @@ import numpy as np
 from spacy.lang.fr import French
 from spacy.lang.fr.stop_words import STOP_WORDS
 from os import listdir
-from graphviz import Digraph
+
 
 # les mot vides 
 # le debut des mots vides en majuscule
@@ -20,15 +20,15 @@ def charger():
     for nomArticle in fichiers :
         with open("C:/Users/E450/Desktop/M2GDIL/ProjetRI/articles/"+nomArticle,encoding="utf8") as a :
             data = json.load(a)
-        motCle = [word for word in data['contenuArticle'].split() if word not in MOT_VIDES]
+        motCle = [word for word in (data['titreArticle']+data['contenuArticle']).split() if word not in MOT_VIDES]
         if motCle :
             articles[nomArticle] = motCle
     return articles
-articles = charger()
+articles_mot = charger()
 #print(articles)
 
 # matrice de similarité 
-def similariteArticle(articles):
+def similariteArticle_mot(articles):
     similariteArticle = {}
     for nomArticle1 in articles.keys() :
         row = {}
@@ -40,22 +40,11 @@ def similariteArticle(articles):
         similariteArticle[nomArticle1] = row
     return similariteArticle
     # fini pour la matrice de similarité des articles
-similarite = similariteArticle(articles)
+#similarite = similariteArticle(articles)
 
-def graphSansEli(similarite):
-    g = Digraph('G', filename='arbre.pdf')
-    for nomArticle in similarite :
-            max = 0
-            for nomArticle1 in similarite :
-                if(nomArticle!=nomArticle1):
-                    simi = similarite[nomArticle][nomArticle1]
-                    if(simi>max):
-                        max = simi
-                        nomArticleMax = nomArticle1
-            g.edge(nomArticle[7:-5], nomArticleMax[7:-5],label = str(max))
-    return g
 
-def calculAdjacent(similarite):
+
+def calculAdjacent_mot(similarite):
 
     # adjacent est la matrice d'adjacent initiale de tous les articles
     adjacent = {}
@@ -78,7 +67,7 @@ def calculAdjacent(similarite):
             if adjacent[art1][art] == 1:
                 adjacent[art][art1] = 1
     return adjacent
-adjacent = calculAdjacent(similarite)
+#adjacent = calculAdjacent(similarite)
 
 def determinerConnexite(adjacent):
     T = {}
@@ -97,7 +86,7 @@ def determinerConnexite(adjacent):
     
     return T
 
-def trouverClasses(adjacent):
+def trouverClasses_mot(adjacent):
         cnx = determinerConnexite(adjacent)
         classes = {}
         k =  0
@@ -137,7 +126,7 @@ class Node:
         self.fils = None
         self.val = val 
 
-class Arbre:
+class Arbre_mot:
     def __init__(self):
         self.root = None
         self.simi = {}
@@ -255,44 +244,40 @@ class Arbre:
     def _simi_article(self,motCle,neoud):
         simi = 0;
         for art in neoud.contenu:
-            intersectionArticle = len(set(motCle).intersection(set(articles[art])))
-            unionArticle = len(set(motCle).union(set(articles[art])))
+            intersectionArticle = len(set(motCle).intersection(set(articles_mot[art])))
+            unionArticle = len(set(motCle).union(set(articles_mot[art])))
             n  = round(intersectionArticle/unionArticle,4)
             if(n>=simi):
                 simi = n
         return simi
 
-    def _determiner_mot_cle(self,article):
-        with open("C:/Users/E450/Desktop/M2GDIL/ProjetRI/articlesTest/"+article,encoding="utf8") as a :
-            data = json.load(a)
-        motCle = [word for word in data['contenuArticle'].split() if word not in MOT_VIDES]
+    def _determiner_mot_cle(self,search):
+        motCle = [word for word in search.split() if word not in MOT_VIDES]
         return motCle
     
-    def _recur(self,noeud,motCle,classe_art):
-        sim_max = 0;
+    def _recur(self,noeud,motCle,classe_art,liste_art):
+        sim_max = 0
         num_fils = -1
         if(noeud.fils==None):
-            return noeud.contenu,classe_art,noeud.val
+            #return noeud.contenu,classe_art,noeud.val
+            liste_art.append(noeud.contenu)
+            return
         classe_art = noeud.val
         for num, key in enumerate(noeud.fils):
             a = self._simi_article(motCle,key)
             if(a>=sim_max):
                 sim_max = a
                 num_fils = num
-        return self._recur(noeud.fils[num_fils],motCle,classe_art)
+        #return
+        liste_art.append(noeud.contenu)
+        self._recur(noeud.fils[num_fils],motCle,classe_art,liste_art)
     
     def classe_article(self,root,article):
+        liste_art = []
+        mot= self._determiner_mot_cle(article)
+        #cont , classe, art = 
+        self._recur(self.root,mot,root.val,liste_art)
         
-        mot_cle = self._determiner_mot_cle(article)
-        cont , classe, art = self._recur(self.root,mot_cle,root.val)
-        return mot_cle, cont , classe, art
+        return liste_art
          
-                
-    def tracerGraphe(self):
-        g = Digraph('G', filename='arbre.pdf')
-        for c,cl in self.simi.items():
-            for i in cl:
-                if(self.simi[c][i]==1):
-                    g.edge(c, i)
-        return g
         

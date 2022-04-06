@@ -4,7 +4,7 @@ import numpy as np
 nlp = spacy.load('fr_core_news_md')
 from spacy.lang.fr.stop_words import STOP_WORDS
 from os import listdir
-from graphviz import Digraph
+#from graphviz import Digraph
 
 # les mot vides 
 # le debut des mots vides en majuscule
@@ -23,7 +23,7 @@ for nomArticle in fichiers :
     with open("C:/Users/E450/Desktop/M2GDIL/ProjetRI/articles/"+nomArticle,encoding="utf-8") as json_data:
         data_dict = json.load(json_data)
     mot_cle=""
-    doc = nlp(data_dict['contenuArticle'])
+    doc = nlp(data_dict['contenuArticle']+data_dict['titreArticle'])
     tokens = [x.text for x in doc]
     for token in tokens:
         if token not in MOT_VIDES:
@@ -43,19 +43,7 @@ def similariteArticle(articles):
     return similariteArticle
 similarite = similariteArticle(articles)
 
-def graphSansEli(similarite):
-    g = Digraph('G', filename='arbre.pdf')
-    for nomArticle in similarite :
-            max = 0
-            for nomArticle1 in similarite :
-                if(nomArticle!=nomArticle1):
-                    simi = similarite[nomArticle][nomArticle1]
-                    if(simi>max):
-                        max = simi
-                        nomArticleMax = nomArticle1
-            g.edge(nomArticle[7:-5], nomArticleMax[7:-5],label = str(max))
-    return g
-graphe = graphSansEli(similarite)
+
 
 def calculAdjacent(similarite):
 
@@ -299,10 +287,4 @@ class Arbre:
         #return mot_cle, cont , classe, art
          
                 
-    def tracerGraphe(self):
-        g = Digraph('G', filename='arbre.pdf')
-        for c,cl in self.simi.items():
-            for i in cl:
-                if(self.simi[c][i]==1):
-                    g.edge(c, i)
-        return g
+    

@@ -23,5 +23,6 @@ urlpatterns = [
     path('login/', views.login_request, name="login"),
     path('accueil/', views.search_request, name="accueil"),
     path("logout/", views.logout_request, name= "logout"),
-    path("result/<searchs>/", views.hello, name= "result"),
+    path("result/", views.hello, name= "result"),
+    path("detail/<str:nomArticle>", views.view_detail, name="detail"),
 ]

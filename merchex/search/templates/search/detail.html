@@ -33,24 +33,15 @@
 
   <!--Search--> 
 <div class="container py-5">
-  <div style="text-align:center;">
-    <h1>KaRatSuba</h1>
-  </div>
-	
-  <form method="post">
-      {% csrf_token %}
-      <div class="active-pink-3 active-pink-4 mb-4 row">
-        <input type="text" value="{{recherche}}" class="form-control" placeholder="Search" aria-label="Search" id="exampleInputEmail1" aria-describedby="emailHelp" name="search">
-      </div>
-  </form>
-  {% if searchs != null %}
-    <h4>Résultat : {{searchs | length}}</h4>
-    {% for art in searchs  %}
-      <div class="row">
-        <h5><a href={% url 'detail' art.nomArticle %}>{{art.titreArticle}}</a></h5> <br/>
-        <p>{{art.resumeArticle}}</p>
-      </div>
-    {% endfor %}
+  {% if detail != null %}
+    <div class="col">
+        <h3> Titre : {{detail.titreArticle}}</h3><br/>
+        <h5> Thème : {{detail.thematiqueArticle}},  Source : {{detail.sourceArticle}}</h5>
+   </div>
+    {{detail.contenuArticle}}
+    <div>
+        <h3> Auteur :{{detail.auteurArticle}}</h3>
+    </div>
   {% endif %}
 </div>
   {% endblock %}
